@@ -4,11 +4,6 @@ const sequelize = require('../config/database');
 const CardDeck = sequelize.define(
   'CardDeck',
   {
-    card_deck_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
     card_id: {
       type: DataTypes.INTEGER,
       references: {

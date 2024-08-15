@@ -1,12 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-Card.belongsToMany(Deck, {
-  through: CardDeck,
-  foreignKey: 'card_id',
-  otherKey: 'deck_id',
-});
-
 const Card = sequelize.define(
   'Card',
   {

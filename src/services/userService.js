@@ -1,4 +1,3 @@
-// src/services/userService.js
 const User = require('../models/User');
 
 const createUser = async (userData) => {
