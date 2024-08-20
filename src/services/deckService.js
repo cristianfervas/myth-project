@@ -6,13 +6,14 @@ const createDeck = async (deckData) => {
     const {
       deck: { card_list_ids: cardListIds },
     } = deckData;
-    const cards = await Card.findAll({
-      where: {
-        card_id: cardListIds,
-      },
-    });
     const newDeck = await Deck.create(deckData.deck);
-    await newDeck.addCards(cards);
+    for (const cardData of cardListIds) {
+      const { card_id, copies } = cardData;
+      const card = await Card.findByPk(card_id);
+      if (card) {
+        await newDeck.addCard(card, { through: { copies } });
+      }
+    }
   } catch (error) {
     console.log('ERROR: ', error);
   }

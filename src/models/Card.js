@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Edition = require('./Edition');
 
 const Card = sequelize.define(
   'Card',
@@ -46,6 +47,10 @@ const Card = sequelize.define(
     },
     rarity_slug: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    is_unique: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     race: {

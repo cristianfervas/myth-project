@@ -30,6 +30,17 @@ const searchCards = async (query) => {
   }
 };
 
+async function createCard(card) {
+  try {
+    const newCard = await Card.create(card);
+
+    console.log('New card created:', newCard);
+  } catch (error) {
+    console.error(`Error trying to create card: ${card.name}`, error);
+  }
+}
+
 module.exports = {
   searchCards,
+  createCard,
 };

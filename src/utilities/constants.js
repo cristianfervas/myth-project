@@ -4,12 +4,12 @@ const MYTH_SOURCE_API = {
     'toolkit_pb_magia_y_divinidad',
     'toolkit_pb_fuerza_y_destino',
     'leyendas_pb_3.0',
-    'pb_lootbox_2023', // NOT FOUND
+    // 'pb_lootbox_2023', // NOT FOUND
     'dracula_pb',
     'shogun_ii',
     'helenica_aniversario',
-    'colecciones_raciales_pb_2023', //  NOT FOUND
-    'relatos_espada_sagrada_aniversario', //  NOT FOUND
+    //'colecciones_raciales_pb_2023', //  NOT FOUND
+    // 'relatos_espada_sagrada_aniversario', //  NOT FOUND
     'espada_sagrada_aniversario',
     'extensiones_pb_2023',
     'toolkit_fe_sin_limite',
@@ -332,6 +332,29 @@ const MYTH_SOURCE_API = {
       id: 41,
       slug: 'tenebris',
       name: 'Tenebris',
+    },
+  ],
+  FORMAT_GAMES: [
+    {
+      id: 1,
+      name: 'Formato Libre',
+      name_slug: 'formato_libre',
+      description:
+        'En este formato de juego, podrás elegir cualquier estrategia combinando todas las cartas razas de aliados o soporte de cualquiera de las ediciones y productos de Primer Bloque',
+    },
+    {
+      id: 2,
+      name: 'Racial Edición',
+      name_slug: 'racial_edicion',
+      description:
+        'En este formato de juego, deberás elegir una de las razas disponibles en Primer Bloque y complementarla sólo con cartas soporte de su edición original.',
+    },
+    {
+      id: 3,
+      name: 'Racial Libre',
+      name_slug: 'racial_libre',
+      description:
+        'En este formato de juego, deberás elegir una de las razas disponibles en Primer Bloque y complementarla con cartas de cualquier edición del Formato.',
     },
   ],
 };

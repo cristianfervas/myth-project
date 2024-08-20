@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Edition = sequelize.define(
-  'Edition',
+const Format = sequelize.define(
+  'Format',
   {
-    edition_id: {
+    format_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
@@ -16,16 +16,16 @@ const Edition = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    image_url: {
+    description: {
       type: DataTypes.STRING,
       allowNull: true,
     },
   },
   {
-    tableName: 'editions',
+    tableName: 'formats',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   },
 );
 
-module.exports = Edition;
+module.exports = Format;

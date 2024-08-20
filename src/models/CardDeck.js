@@ -20,6 +20,10 @@ const CardDeck = sequelize.define(
       },
       allowNull: false,
     },
+    copies: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     tableName: 'card_decks',
