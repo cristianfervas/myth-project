@@ -13,7 +13,7 @@ router.post('/deck', async (req, res) => {
     const deckCreated = await deckService.createDeck(deck);
     res.status(201).json(deckCreated);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    res.status(500).json({ error: `Error creating deck: ${error}` });
   }
 });
 
@@ -31,8 +31,6 @@ router.get('/decks', async (req, res) => {
 
 router.get('/deck/:deckId', async (req, res) => {
   const { userName } = req.query;
-  console.log('userName: ', userName);
-  console.log('params: ', req.params);
   try {
     const decks = await deckService.getDeckByUserName(
       userName,

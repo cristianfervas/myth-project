@@ -7,6 +7,7 @@ const Banlist = sequelize.define(
     banlist_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
     },
     format_id: {
       type: DataTypes.INTEGER,

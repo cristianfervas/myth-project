@@ -357,6 +357,17 @@ const MYTH_SOURCE_API = {
         'En este formato de juego, deberás elegir una de las razas disponibles en Primer Bloque y complementarla con cartas de cualquier edición del Formato.',
     },
   ],
+  BANTYPES: [
+    { id: 'RESTRICTED_1', restricted_to: 1 },
+    { id: 'RESTRICTED_2', restricted_to: 2 },
+    { id: 'BANNED', restricted_to: 0 },
+  ],
+  DECK_CARD_LIMIT: 50,
 };
 
-module.exports = MYTH_SOURCE_API;
+const getRestrictionLevel = (banTypeId) => {
+  const banType = BANTYPES.find((type) => type.id === banTypeId);
+  return banType ? banType.restricted_to : null;
+};
+
+module.exports = { MYTH_SOURCE_API, getRestrictionLevel };
