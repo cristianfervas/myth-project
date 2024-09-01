@@ -2,6 +2,7 @@ const axios = require('axios');
 const MYTH_SOURCE_API = require('../utilities/constants');
 const editionService = require('../services/editionService');
 const cardService = require('../services/cardService');
+const logger = require('./config/logger');
 
 async function retrieveCardData() {
   try {
@@ -17,7 +18,7 @@ async function retrieveCardData() {
       }
     });
   } catch (error) {
-    console.log('Error fetching data:', error);
+    logger.error('Error fetching data:', error);
   }
 }
 
@@ -70,7 +71,7 @@ const generateFeedToCards = (cards, edition) => {
     try {
       await cardService.createCard(card);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   });
 };

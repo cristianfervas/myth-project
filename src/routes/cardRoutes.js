@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const cardService = require('../services/cardService');
+const {
+  sendSuccessResponse,
+  sendErrorResponse,
+} = require('../utilities/responseHandler');
 
 router.get('/cards/search', async (req, res) => {
   if (Object.keys(req.query).length === 0) {
@@ -8,9 +12,9 @@ router.get('/cards/search', async (req, res) => {
   }
   try {
     const cards = await cardService.searchCards(req.query);
-    res.status(200).json(cards);
+    return sendSuccessResponse(res, cards);
   } catch (error) {
-    res.status(500).json({ error: 'Error searching the cards.' });
+    return sendErrorResponse(res, error, 500);
   }
 });
 

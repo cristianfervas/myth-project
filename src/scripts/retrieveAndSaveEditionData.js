@@ -1,6 +1,7 @@
 const axios = require('axios');
 const MYTH_SOURCE_API = require('../utilities/constants');
 const editionService = require('../services/editionService');
+const logger = require('./config/logger');
 
 async function retrieveEditionData() {
   try {
@@ -15,7 +16,7 @@ async function retrieveEditionData() {
       }
     });
   } catch (error) {
-    console.log('Error fetching data:', error);
+    logger.error('Error fetching data:', error);
   }
 }
 

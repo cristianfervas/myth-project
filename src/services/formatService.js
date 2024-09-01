@@ -9,7 +9,7 @@ async function createFormat(formatData) {
       description: formatData.description,
     });
 
-    console.log('New format created:', newFormat);
+    return newFormat;
   } catch (error) {
     console.error('Error trying create format:', error);
   }

@@ -365,9 +365,14 @@ const MYTH_SOURCE_API = {
   DECK_CARD_LIMIT: 50,
 };
 
+const PAGINATION = {
+  PAGE_DEFAULT: 1,
+  LIMIT_DEFAULT: 10,
+};
+
 const getRestrictionLevel = (banTypeId) => {
   const banType = BANTYPES.find((type) => type.id === banTypeId);
   return banType ? banType.restricted_to : null;
 };
 
-module.exports = { MYTH_SOURCE_API, getRestrictionLevel };
+module.exports = { MYTH_SOURCE_API, getRestrictionLevel, PAGINATION };

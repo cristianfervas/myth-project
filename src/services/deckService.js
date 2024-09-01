@@ -1,3 +1,7 @@
+const { Deck, Card } = require('../models/associations');
+const User = require('../models/User');
+const Banlist = require('../models/Banlist');
+const { MYTH_SOURCE_API, PAGINATION } = require('../utilities/constants');
 const {
   DeckError,
   CardBanRestrictionError,
@@ -6,10 +10,9 @@ const {
   CardUniqueCopiesRestriction,
   TotalCardCopiesInDeckRestriction,
 } = require('../exceptions/DeckError');
-const { Deck, Card } = require('../models/associations');
-const User = require('../models/User');
-const Banlist = require('../models/Banlist');
-const { MYTH_SOURCE_API } = require('../utilities/constants');
+const { UserNotFoundError } = require('../exceptions/UserError');
+const logger = require('../config/logger');
+const setOffset = require('../utilities/pagination');
 
 const getBannedCards = async (format_id) => {
   const formatBanlist = await Banlist.findAll({
@@ -88,7 +91,6 @@ const createDeck = async (deckData) => {
       }
     }
     checkTotalCardsInDeck(totalCards);
-    console.log(cardsToAdd);
     const newDeck = await Deck.create(deckData.deck);
     for (const cardToAdd of cardsToAdd) {
       const { card, copies } = cardToAdd;
@@ -97,30 +99,48 @@ const createDeck = async (deckData) => {
     return newDeck;
   } catch (error) {
     if (error instanceof DeckError) {
-      console.log('Deck-related error:', error.message);
+      logger.error('Deck-related error:', error.message);
     } else {
-      console.log('Unexpected error:', error.message);
+      logger.error('Unexpected error:', error.message);
     }
     throw error;
   }
 };
 
-const getDecksByUserName = async (userName) => {
+const getDecksByUserName = async (userName, page, pageSize) => {
   try {
     const userData = await User.findOne({
       where: {
         user_name: userName,
       },
     });
+    const offset = setOffset(page, pageSize);
     if (userData) {
-      return await Deck.findAll({
+      const totalDecks = await Deck.count({
         where: {
           user_id: userData.user_id,
         },
       });
+      const decks = await Deck.findAll({
+        where: {
+          user_id: userData.user_id,
+        },
+        limit: pageSize,
+        offset: offset,
+      });
+      const totalPages = Math.ceil(totalDecks / pageSize);
+      return {
+        data: decks,
+        pagination: {
+          page: page,
+          pageSize: pageSize,
+          totalItems: totalDecks,
+          totalPages: totalPages,
+        },
+      };
     }
   } catch (error) {
-    console.log('ERROR: ', error);
+    logger.error('ERROR: ', error);
   }
 };
 
@@ -131,17 +151,41 @@ const getDeckByUserName = async (userName, deckId) => {
         user_name: userName,
       },
     });
-    if (userData) {
-      const deckWithCards = await Deck.findOne({
-        where: { deck_id: deckId },
-        include: {
-          model: Card,
-        },
-      });
-      return deckWithCards;
+    if (!userData) {
+      throw new UserNotFoundError('User not found');
     }
+    const deckWithCards = await Deck.findOne({
+      where: { deck_id: deckId },
+      include: {
+        model: Card,
+      },
+    });
+    return deckWithCards;
   } catch (error) {
-    console.log('ERROR: ', error);
+    logger.error('ERROR: ', error);
+  }
+};
+
+const deleteDeckByUserName = async (userName, deckId) => {
+  try {
+    const userData = await User.findOne({
+      where: {
+        user_name: userName,
+      },
+    });
+    if (!userData) {
+      throw new UserNotFoundError('User not found');
+    }
+    const deckWithCards = await Deck.findOne({
+      where: { deck_id: deckId },
+      include: {
+        model: Card,
+      },
+    });
+    await deckWithCards.destroy();
+    return { message: 'Deck successfully deleted' };
+  } catch (error) {
+    logger.error('ERROR: ', error);
   }
 };
 
@@ -149,4 +193,5 @@ module.exports = {
   createDeck,
   getDecksByUserName,
   getDeckByUserName,
+  deleteDeckByUserName,
 };

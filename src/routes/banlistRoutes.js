@@ -1,37 +1,37 @@
 const express = require('express');
 const banlistService = require('../services/banlistService');
 const banListSchema = require('./schemas/banlistSchema');
+const {
+  sendErrorResponse,
+  sendSuccessResponse,
+} = require('../utilities/responseHandler');
 
 const router = express.Router();
 
 router.post('/banlist/bannedCards', async (req, res) => {
   const { error, value: banlist } = banListSchema.validate(req.body);
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return sendErrorResponse(res, error.details[0].message);
   }
   try {
     const banList = await banlistService.createBanlist(banlist);
-    res.status(201).json(banList);
+    return sendSuccessResponse(res, banList);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: `Error trying adding card to banlist: ${error}` });
+    return sendErrorResponse(res, error, 500);
   }
 });
 
 router.get('/banlist', async (req, res) => {
   if (Object.keys(req.query).length === 0) {
-    return res.status(400).json({ error: `A search term must be provided` });
+    return sendErrorResponse(res, 'A search term must be provided');
   }
   try {
     const bannedCards = await banlistService.getAllBannedCardsByFormat(
       req.query,
     );
-    res.status(200).json(bannedCards);
+    return sendSuccessResponse(res, bannedCards);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: `Error searching the banned cards. ${error}` });
+    return sendErrorResponse(res, error, 500);
   }
 });
 

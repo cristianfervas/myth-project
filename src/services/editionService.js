@@ -9,7 +9,7 @@ async function createEdition(editionData) {
       image_url: editionData.image,
     });
 
-    console.log('New edition created:', newEdition);
+    return newEdition;
   } catch (error) {
     console.error('Error trying create edition:', error);
   }

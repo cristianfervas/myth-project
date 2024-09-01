@@ -2,6 +2,12 @@ const Banlist = require('../models/Banlist');
 const Card = require('../models/Card');
 const Format = require('../models/Format');
 const MYTH_SOURCE_API = require('../utilities/constants');
+const {
+  BanlistError,
+  InvalidBanlistError,
+  BanCardNotFoundError,
+} = require('../exceptions/BanlistException');
+const logger = require('../config/logger');
 
 const isValidBanType = (incomingBanType) => {
   return MYTH_SOURCE_API.BANTYPES.some(
@@ -15,14 +21,16 @@ const createBanlist = async (banData) => {
   } = banData;
 
   if (!isValidBanType(ban_type)) {
-    throw new Error(`${ban_type} is not a valid restriction.`);
+    throw new InvalidBanlistError(`${ban_type} is not a valid restriction.`);
   }
 
   try {
     for (const ban_card_id of banned_card_ids) {
       const card = await Card.findByPk(ban_card_id);
       if (!card) {
-        throw new Error(`Card with ID ${ban_card_id} does not exist.`);
+        throw new BanCardNotFoundError(
+          `Card with ID ${ban_card_id} does not exist.`,
+        );
       }
 
       const banCard = {
@@ -37,7 +45,11 @@ const createBanlist = async (banData) => {
 
     return `Banlist created successfully with ${banned_card_ids.length} entries.`;
   } catch (error) {
-    console.log('ERROR: ', error);
+    if (error instanceof BanlistError) {
+      logger.error('Banlist-related error:', error.message);
+    } else {
+      logger.error('Unexpected error:', error);
+    }
     throw error;
   }
 };
@@ -67,7 +79,7 @@ const getAllBannedCardsByFormat = async (queryParams) => {
     }
     return [];
   } catch (error) {
-    console.log('ERROR: ', error);
+    logger.error('Error: ', error);
     throw error;
   }
 };

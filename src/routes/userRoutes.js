@@ -1,23 +1,32 @@
 const express = require('express');
 const userService = require('../services/userService');
+const userSchema = require('./schemas/userSchema');
+const {
+  sendSuccessResponse,
+  sendErrorResponse,
+} = require('../utilities/responseHandler');
 
 const router = express.Router();
 
 router.post('/users', async (req, res) => {
   try {
-    const user = await userService.createUser(req.body);
-    res.status(201).json(user);
+    const { error, value: incomingUser } = userSchema.validate(req.body);
+    if (error) {
+      return sendErrorResponse(res, error.details[0].message);
+    }
+    const user = await userService.createUser(incomingUser);
+    return sendSuccessResponse(res, user);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    return sendErrorResponse(res, error, 500);
   }
 });
 
 router.get('/users', async (req, res) => {
   try {
     const users = await userService.getAllUsers();
-    res.status(200).json(users);
+    return sendSuccessResponse(res, users);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los usuarios' });
+    return sendErrorResponse(res, error, 500);
   }
 });
 
@@ -25,12 +34,12 @@ router.get('/users/:id', async (req, res) => {
   try {
     const user = await userService.getUserById(req.params.id);
     if (user) {
-      res.status(200).json(user);
+      return sendSuccessResponse(res, user);
     } else {
-      res.status(404).json({ error: 'Usuario no encontrado' });
+      return sendErrorResponse(res, error.details[0].message, 404);
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el usuario' });
+    return sendErrorResponse(res, error, 500);
   }
 });
 
@@ -38,12 +47,12 @@ router.put('/users/:id', async (req, res) => {
   try {
     const user = await userService.updateUser(req.params.id, req.body);
     if (user) {
-      res.status(200).json(user);
+      return sendSuccessResponse(res, user);
     } else {
-      res.status(404).json({ error: 'Usuario no encontrado' });
+      return sendErrorResponse(res, error.details[0].message, 404);
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar el usuario' });
+    return sendErrorResponse(res, error, 500);
   }
 });
 
@@ -53,10 +62,10 @@ router.delete('/users/:id', async (req, res) => {
     if (success) {
       res.status(204).send();
     } else {
-      res.status(404).json({ error: 'Usuario no encontrado' });
+      return sendErrorResponse(res, error.details[0].message, 404);
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar el usuario' });
+    return sendErrorResponse(res, error, 500);
   }
 });
 
