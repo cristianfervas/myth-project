@@ -1,3 +1,4 @@
+const logger = require('../config/logger');
 const Format = require('../models/Format');
 
 async function createFormat(formatData) {
@@ -11,7 +12,7 @@ async function createFormat(formatData) {
 
     return newFormat;
   } catch (error) {
-    console.error('Error trying create format:', error);
+    logger.error('Error trying create format:', error);
   }
 }
 

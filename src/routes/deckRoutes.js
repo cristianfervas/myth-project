@@ -1,5 +1,5 @@
 const express = require('express');
-const deckSchema = require('./schemas/deckSchema');
+const { deckSchema, deckQuerySchema } = require('./schemas/deckSchema');
 const deckService = require('../services/deckService');
 const {
   sendErrorResponse,
@@ -17,14 +17,12 @@ router.post('/deck', async (req, res) => {
     const deckCreated = await deckService.createDeck(deck);
     return sendSuccessResponse(res, deckCreated);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 
 router.get('/decks', async (req, res) => {
-  const { error, value } = deckSchema.deckQuerySchema.validate(
-    ({ userName, page, pageSize } = req.query),
-  );
+  const { error, value } = deckQuerySchema.validate(req.query);
   if (error) {
     return sendErrorResponse(res, error.details[0].message);
   }
@@ -37,12 +35,15 @@ router.get('/decks', async (req, res) => {
     );
     return sendSuccessResponse(res, decks);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 
 router.get('/deck/:deckId', async (req, res) => {
   const { userName } = req.query;
+  if (!userName) {
+    return sendErrorResponse(res, `A userName must be provided`, 400);
+  }
   try {
     const deck = await deckService.getDeckByUserName(
       userName,
@@ -50,12 +51,15 @@ router.get('/deck/:deckId', async (req, res) => {
     );
     return sendSuccessResponse(res, deck);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 
 router.delete('/deck/:deckId', async (req, res) => {
   const { userName } = req.query;
+  if (!userName) {
+    return sendErrorResponse(res, `A userName must be provided`, 400);
+  }
   try {
     const deck = await deckService.deleteDeckByUserName(
       userName,
@@ -63,7 +67,7 @@ router.delete('/deck/:deckId', async (req, res) => {
     );
     return sendSuccessResponse(res, deck);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 

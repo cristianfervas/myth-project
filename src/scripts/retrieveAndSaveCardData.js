@@ -63,7 +63,7 @@ const generateFeedToCards = (cards, edition) => {
       });
     }
   });
-  console.log(
+  logger.info(
     `Cards of the edition: ${edition.title} with errors: `,
     cardsWithError,
   );

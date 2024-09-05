@@ -1,7 +1,7 @@
 const { Deck, Card } = require('../models/associations');
 const User = require('../models/User');
 const Banlist = require('../models/Banlist');
-const { MYTH_SOURCE_API, PAGINATION } = require('../utilities/constants');
+const { MYTH_SOURCE_API } = require('../utilities/constants');
 const {
   DeckError,
   CardBanRestrictionError,
@@ -12,7 +12,10 @@ const {
 } = require('../exceptions/DeckError');
 const { UserNotFoundError } = require('../exceptions/UserError');
 const logger = require('../config/logger');
-const setOffset = require('../utilities/pagination');
+const {
+  setOffset,
+  generatePaginatedFormat,
+} = require('../utilities/pagination');
 
 const getBannedCards = async (format_id) => {
   const formatBanlist = await Banlist.findAll({
@@ -114,8 +117,8 @@ const getDecksByUserName = async (userName, page, pageSize) => {
         user_name: userName,
       },
     });
-    const offset = setOffset(page, pageSize);
     if (userData) {
+      const offset = setOffset(page, pageSize);
       const totalDecks = await Deck.count({
         where: {
           user_id: userData.user_id,
@@ -128,17 +131,9 @@ const getDecksByUserName = async (userName, page, pageSize) => {
         limit: pageSize,
         offset: offset,
       });
-      const totalPages = Math.ceil(totalDecks / pageSize);
-      return {
-        data: decks,
-        pagination: {
-          page: page,
-          pageSize: pageSize,
-          totalItems: totalDecks,
-          totalPages: totalPages,
-        },
-      };
+      return generatePaginatedFormat(decks, page, totalDecks, pageSize);
     }
+    return generatePaginatedFormat([], 1, 0, pageSize);
   } catch (error) {
     logger.error('ERROR: ', error);
   }
@@ -158,6 +153,7 @@ const getDeckByUserName = async (userName, deckId) => {
       where: { deck_id: deckId },
       include: {
         model: Card,
+        as: 'cards',
       },
     });
     return deckWithCards;

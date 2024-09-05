@@ -2,7 +2,7 @@ const Joi = require('joi');
 const { PAGINATION } = require('../../utilities/constants');
 
 const deckSchema = Joi.object({
-  deck: {
+  deck: Joi.object({
     name: Joi.string().min(3).max(30).required(),
     image_url: Joi.string().uri().optional(),
     race: Joi.string().optional(),
@@ -16,7 +16,7 @@ const deckSchema = Joi.object({
         }),
       )
       .required(),
-  },
+  }).required(),
 }).required();
 
 const deckQuerySchema = Joi.object({

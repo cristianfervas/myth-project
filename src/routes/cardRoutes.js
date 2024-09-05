@@ -8,7 +8,7 @@ const {
 
 router.get('/cards/search', async (req, res) => {
   if (Object.keys(req.query).length === 0) {
-    return res.status(400).json({ error: `A search term must be provided` });
+    return sendErrorResponse(res, `A search term must be provided`, 400);
   }
   try {
     const cards = await cardService.searchCards(req.query);

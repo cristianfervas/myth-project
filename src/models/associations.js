@@ -18,6 +18,7 @@ Card.belongsToMany(Deck, {
 Deck.hasMany(Format, { foreignKey: 'format_id' });
 Deck.belongsTo(User, { foreignKey: 'user_id' });
 Deck.belongsToMany(Card, {
+  as: 'cards',
   through: CardDeck,
   foreignKey: 'deck_id',
   otherKey: 'card_id',

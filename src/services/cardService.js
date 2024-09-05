@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const Card = require('../models/Card');
+const logger = require('../config/logger');
 
 const searchCards = async (query) => {
   const { name, race, type, rarity } = query;
@@ -25,7 +26,7 @@ const searchCards = async (query) => {
     });
     return cards;
   } catch (error) {
-    console.error('Error fetching the cards', error);
+    logger.error('Error fetching the cards', error);
     throw error;
   }
 };
@@ -35,7 +36,7 @@ async function createCard(card) {
     const newCard = await Card.create(card);
     return newCard;
   } catch (error) {
-    console.error(`Error trying to create card: ${card.name}`, error);
+    logger.error(`Error trying to create card: ${card.name}`, error);
   }
 }
 

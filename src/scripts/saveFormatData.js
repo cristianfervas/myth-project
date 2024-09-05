@@ -1,3 +1,4 @@
+const logger = require('../config/logger');
 const formatService = require('../services/formatService');
 
 const MYTH_SOURCE_API = require('../utilities/constants');
@@ -9,7 +10,7 @@ const saveFormatData = () => {
       await formatService.createFormat(format);
     });
   } catch (error) {
-    console.error('Error saving format', error);
+    logger.error('Error saving format', error);
   }
 };
 

@@ -370,9 +370,4 @@ const PAGINATION = {
   LIMIT_DEFAULT: 10,
 };
 
-const getRestrictionLevel = (banTypeId) => {
-  const banType = BANTYPES.find((type) => type.id === banTypeId);
-  return banType ? banType.restricted_to : null;
-};
-
-module.exports = { MYTH_SOURCE_API, getRestrictionLevel, PAGINATION };
+module.exports = { MYTH_SOURCE_API, PAGINATION };

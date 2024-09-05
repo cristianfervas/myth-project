@@ -1,3 +1,4 @@
+const logger = require('../config/logger');
 const Edition = require('../models/Edition');
 
 async function createEdition(editionData) {
@@ -11,7 +12,7 @@ async function createEdition(editionData) {
 
     return newEdition;
   } catch (error) {
-    console.error('Error trying create edition:', error);
+    logger.error('Error trying create edition:', error);
   }
 }
 
