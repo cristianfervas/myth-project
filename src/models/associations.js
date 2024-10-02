@@ -8,7 +8,7 @@ const User = require('./User');
 
 User.hasMany(Deck, { foreignKey: 'user_id' });
 
-Card.belongsTo(Edition, { foreignKey: 'edition_id' });
+Card.belongsTo(Edition, { as: 'edition', foreignKey: 'edition_id' });
 Card.belongsToMany(Deck, {
   through: CardDeck,
   foreignKey: 'card_id',

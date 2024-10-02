@@ -14,7 +14,7 @@ router.get('/cards/search', async (req, res) => {
     const cards = await cardService.searchCards(req.query);
     return sendSuccessResponse(res, cards);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 

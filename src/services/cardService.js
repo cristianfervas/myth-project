@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const Card = require('../models/Card');
+const { Edition } = require('../models/associations');
 const logger = require('../config/logger');
 
 const searchCards = async (query) => {
@@ -23,6 +24,10 @@ const searchCards = async (query) => {
   try {
     const cards = await Card.findAll({
       where: whereClause,
+      include: {
+        model: Edition,
+        as: 'edition',
+      },
     });
     return cards;
   } catch (error) {

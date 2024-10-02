@@ -17,13 +17,13 @@ router.post('/banlist/bannedCards', async (req, res) => {
     const banList = await banlistService.createBanlist(banlist);
     return sendSuccessResponse(res, banList);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 
 router.get('/banlist', async (req, res) => {
   if (Object.keys(req.query).length === 0) {
-    return sendErrorResponse(res, 'A search term must be provided');
+    return sendErrorResponse(res, 'A format_id must be provided');
   }
   try {
     const bannedCards = await banlistService.getAllBannedCardsByFormat(
@@ -31,7 +31,7 @@ router.get('/banlist', async (req, res) => {
     );
     return sendSuccessResponse(res, bannedCards);
   } catch (error) {
-    return sendErrorResponse(res, error, 500);
+    return sendErrorResponse(res, error.message, 500);
   }
 });
 
